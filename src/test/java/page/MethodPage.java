@@ -15,7 +15,7 @@ public class MethodPage {
         this.driver = driver;
     }
 
-    public void Login(String elementId, String string) { // her seyi girdik bir tek maili girilcek bıraktık.
+    public void Login(String elementId, String email) { // her seyi girdik bir tek maili girilcek bıraktık.
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50L));
 
@@ -23,7 +23,7 @@ public class MethodPage {
         driver.findElement(By.xpath("//button[@name='login']")).click();
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(elementId)));
-        driver.findElement(By.xpath(elementId)).sendKeys(string);
+        driver.findElement(By.xpath(elementId)).sendKeys(email);
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@name='password']")));
         driver.findElement(By.xpath("//input[@name='password']")).sendKeys("Password12.");
@@ -41,8 +41,8 @@ public class MethodPage {
         driver.findElement(By.xpath(elementId)).click();
     }
 
-    public void FindElementWrite(String elementId, String string) {
-        driver.findElement(By.xpath(elementId)).sendKeys(string);
+    public void FindElementWrite(String elementId, String generalText) {
+        driver.findElement(By.xpath(elementId)).sendKeys(generalText);
     }
 
 //    public void Notification(String elementId) { //sorun var hala çözülmediiiii
@@ -61,17 +61,17 @@ public class MethodPage {
 //
 //    }
 
-    public void NewRecord( String elementId, String stringOne, String stringTwo) {
+    public void NewRecord( String elementId, String name, String code) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50L));
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='btn btn-sm btn-success mb-1']")));
         driver.findElement(By.xpath("//button[@class='btn btn-sm btn-success mb-1']")).click();
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@name='form-name']")));
-        driver.findElement(By.xpath("//input[@name='form-name']")).sendKeys(stringOne);
+        driver.findElement(By.xpath("//input[@name='form-name']")).sendKeys(name);
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@name='description']")));
-        driver.findElement(By.xpath("//input[@name='description']")).sendKeys(stringTwo);
+        driver.findElement(By.xpath("//input[@name='description']")).sendKeys(code);
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@id='inputDefault']")));
         driver.findElement(By.xpath("//button[@id='inputDefault']")).click();
