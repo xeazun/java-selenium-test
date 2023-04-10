@@ -3,181 +3,228 @@ package tests;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import page.AdminUser;
-import page.CommonXpath;
-import page.MethodPage;
+import constants.AdminConstant;
+import constants.CommonConstant;
+import services.UITestService;
+import constants.UserConstant;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Random;
+import java.util.UUID;
 
 public class MasrafUITests {
-    private WebDriver driver;
-    private AdminUser adminUser;
-    private CommonXpath commonXpath;
+    private WebDriver _driver;
+    private AdminConstant _adminConstant;
+    private CommonConstant _commonConstant;
+    private UserConstant _userConstant;
+
+    private UITestService _uiTestService;
+
 
     @BeforeEach
     void setup() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        adminUser = new AdminUser(driver);
-        commonXpath = new CommonXpath(driver);
-
+        _driver = new ChromeDriver();
+        _driver.manage().window().maximize();
+        _adminConstant = new AdminConstant();
+        _commonConstant = new CommonConstant();
+        _userConstant = new UserConstant();
+        _uiTestService = new UITestService(_driver);
     }
 
     @Test
     void oneHeartTest() throws InterruptedException {
-        driver.get("https://masraf-dev-front.azurewebsites.net/");
+        _driver.get("https://masraf-dev-front.azurewebsites.net/");
 
-        //ADMİN LOGİN = metot haline getirip her login olduğunda bir kere cagırabilir miyiz? YES BEEEH
+        int durationTime = 5;
 
-        commonXpath.Login(commonXpath.loginMail, "murat.admin@nttdata.com");
-
-//        commonXpath.Wait(commonXpath.login);
-//        commonXpath.FindElementClick(commonXpath.login);
-//
-//        commonXpath.Wait(commonXpath.loginMail);
-//        commonXpath.FindElementWrite(commonXpath.loginMail, "murat.admin@nttdata.com");
-//
-//        commonXpath.Wait(commonXpath.loginPassword);
-//        commonXpath.FindElementWrite(commonXpath.loginPassword, "Password12.");
-//
-//        commonXpath.Wait(commonXpath.loginIn);
-//        commonXpath.FindElementClick(commonXpath.loginIn);
+        //ADMİN LOGİN
+        _uiTestService.Wait(_commonConstant.loginMailFieldXpath, durationTime);
+        _uiTestService.Login(_commonConstant.loginMailFieldXpath, "murat.admin@nttdata.com");
 
         //KULLANICI YÖNET
 
-        adminUser.Wait(adminUser.adminUserToManage);
-        adminUser.FindElementClick(adminUser.adminUserToManage);
+        _uiTestService.Wait(_adminConstant.userToManageSectionXpath, durationTime);
+        _uiTestService.FindElementClick(_adminConstant.userToManageSectionXpath);
+        _uiTestService.UserNewRecord("ezgi.admin@nttdata.com", "ezgi.admin@nttdata.com", "Ezgi", "Azun", durationTime);
 
-        adminUser.Wait(adminUser.adminRecord);
-        adminUser.FindElementClick(adminUser.adminRecord);
+        _uiTestService.Notification(durationTime);
+        _uiTestService.FindElementClick(_commonConstant.modalCloseButtonXpath);
 
-//        adminUser.Wait(adminUser.adminName);
-//        adminUser.FindElementWrite(adminUser.adminName,"ezgi.admin@nttdata.com"); //8 denemeden 2 sini kaydetti 6sini kaydetmedi.
+//        //ÖDEME YÖNTEMİ
 
-        adminUser.Wait(adminUser.adminMail);
-        adminUser.FindElementWrite(adminUser.adminMail, "ezgi.admin@nttdata.com");
+        _uiTestService.Wait(_adminConstant.paymentSectionXpath, durationTime);
+        _uiTestService.FindElementClick(_adminConstant.paymentSectionXpath);
+        _uiTestService.NewRecord("KREDI5", "KRD5", durationTime);
+        _uiTestService.Notification(durationTime);
+        _uiTestService.DetailSection(_commonConstant.showEighthRecordButtonXpath, durationTime);
 
-        adminUser.Wait(adminUser.adminFirstName);
-        adminUser.FindElementWrite(adminUser.adminFirstName, "Ezgi");
+//        //MASRAF MERKEZİ
 
-        adminUser.Wait(adminUser.adminSaveLastName);
-        adminUser.FindElementWrite(adminUser.adminSaveLastName, "Azun");
+        _uiTestService.Wait(_adminConstant.costCenterSectionXpath, durationTime);
+        _uiTestService.FindElementClick(_adminConstant.costCenterSectionXpath);
+        _uiTestService.NewRecord("Masraf Merkezi 5", "MER5", durationTime);
+        _uiTestService.Notification(durationTime);
+        _uiTestService.DetailSection(_commonConstant.showFiveRecordButtonXpath, durationTime);
 
-        commonXpath.Wait(commonXpath.save);
-        commonXpath.FindElementClick(commonXpath.save);
+//        //PARA BİRİMİ
 
-//        commonXpath.Wait(commonXpath.popupTrue); //istediğim gibi çalışmıyor. istek tamamlandı mesqajını görmeden çıkıyor.
-//        commonXpath.Notification(commonXpath.popupTrue);
+        _uiTestService.Wait(_adminConstant.currencySectionXpath, durationTime);
+        _uiTestService.FindElementClick(_adminConstant.currencySectionXpath);
+        _uiTestService.NewRecord("STERLİN", "GBD", durationTime);
+        _uiTestService.Notification(durationTime);
+        _uiTestService.DetailSection(_commonConstant.showFourRecordButtonXpath, durationTime);
 
-        commonXpath.Wait(commonXpath.close);
-        commonXpath.FindElementClick(commonXpath.close);
+//        //LOGOUT
 
-        //ÖDEME YÖNTEMİ
+        _uiTestService.Logout(durationTime);
 
-        adminUser.Wait(adminUser.adminPayment);
-        adminUser.FindElementClick(adminUser.adminPayment);
-
-        commonXpath.NewRecord(commonXpath.detailEight,"KREDI4","KRD4");
-
-//        adminUser.Wait(adminUser.adminRecord);
-//        adminUser.FindElementClick(adminUser.adminRecord);
-//
-////        adminUser.Wait(adminUser.adminName);
-////        adminUser.FindElementWrite(adminUser.adminName,"KREDİ4");   //sıkıntı xpathte bulamıyor o kısımdakilerinde hep sıkıntı cıkartcak gibi
-//
-//        adminUser.Wait(adminUser.adminCode);
-//        adminUser.FindElementWrite(adminUser.adminCode, "KRD4");
-//
-//        commonXpath.Wait(commonXpath.save);
-//        commonXpath.FindElementClick(commonXpath.save);
-//
-////        commonXpath.Wait(commonXpath.popupTrue); //istediğim gibi çalışmıyor. istek tamamlandı mesqajını görmeden çıkıyor.
-////        commonXpath.Notification(commonXpath.popupTrue);
-//
-//        commonXpath.Wait(commonXpath.close);
-//        commonXpath.FindElementClick(commonXpath.close);
-//
-//        commonXpath.Wait(commonXpath.detailEight);
-//        commonXpath.FindElementClick(commonXpath.detailEight);
-//
-//        commonXpath.Wait(commonXpath.close);
-//        commonXpath.FindElementClick(commonXpath.close);   //çalışmıyor neden allahım neden
-
-        //MASRAF MERKEZİ
-
-        adminUser.Wait(adminUser.adminCostCenter);
-        adminUser.FindElementClick(adminUser.adminCostCenter);
-
-        commonXpath.NewRecord(commonXpath.detailFour,"Masraf Merkezi 4","MER4");
-
-//        adminUser.Wait(adminUser.adminRecord);
-//        adminUser.FindElementClick(adminUser.adminRecord);
-//
-//        adminUser.Wait(adminUser.adminName);
-//        adminUser.FindElementWrite(adminUser.adminName, "Masraf Merkezi4");   //sıkıntı xpathte bulamıyor o kısımdakilerinde hep sıkıntı cıkartcak gibi
-//
-//        adminUser.Wait(adminUser.adminCode);
-//        adminUser.FindElementWrite(adminUser.adminCode, "MER4");
-//
-//        commonXpath.Wait(commonXpath.save);
-//        commonXpath.FindElementClick(commonXpath.save);
-//
-////        commonXpath.Wait(commonXpath.popupTrue); //istediğim gibi çalışmıyor. istek tamamlandı mesqajını görmeden çıkıyor.
-////        commonXpath.Notification(commonXpath.popupTrue);
-//
-//        commonXpath.Wait(commonXpath.close);
-//        commonXpath.FindElementClick(commonXpath.close);
-//
-//        commonXpath.Wait(commonXpath.detailFour);
-//        commonXpath.FindElementClick(commonXpath.detailFour);
-//
-//        commonXpath.Wait(commonXpath.close);
-//        commonXpath.FindElementClick(commonXpath.close);   //çalışmıyor neden allahım neden
-
-        //PARA BİRİMİ
-
-        adminUser.Wait(adminUser.adminCurrency);
-        adminUser.FindElementClick(adminUser.adminCurrency);
-        commonXpath.NewRecord(commonXpath.detailFour,"Sterlin","GBP");
-
-//        adminUser.Wait(adminUser.adminRecord);
-//        adminUser.FindElementClick(adminUser.adminRecord);
-//
-//        adminUser.Wait(adminUser.adminName);
-//        adminUser.FindElementWrite(adminUser.adminName, "Masraf Merkezi4");   //sıkıntı xpathte bulamıyor o kısımdakilerinde hep sıkıntı cıkartcak gibi
-//
-//        adminUser.Wait(adminUser.adminCode);
-//        adminUser.FindElementWrite(adminUser.adminCode, "MER4");
-//
-//        commonXpath.Wait(commonXpath.save);
-//        commonXpath.FindElementClick(commonXpath.save);
-//
-////        commonXpath.Wait(commonXpath.popupTrue); //istediğim gibi çalışmıyor. istek tamamlandı mesqajını görmeden çıkıyor.
-////        commonXpath.Notification(commonXpath.popupTrue);
-//
-//        commonXpath.Wait(commonXpath.detailFour);
-//        commonXpath.FindElementClick(commonXpath.detailFour);
-//
-//        commonXpath.Wait(commonXpath.close);
-//        commonXpath.FindElementClick(commonXpath.close);   //çalışmıyor neden allahım neden
-
-
-        //LOGOUT
-//        commonXpath.Wait(commonXpath.logOut);
-//        commonXpath.FindElementClick(commonXpath.logOut);
-//
-//        commonXpath.Wait(commonXpath.closeButton);
-//        commonXpath.FindElementClick(commonXpath.closeButton);
-//        commonXpath.Logout(commonXpath.logOut);    // bunu baska sekilde yapmak mümkün mü?????????
 
         //USER LOGİN
-        commonXpath.Login(commonXpath.loginMail, "murat.user@nttdata.com");
+        _uiTestService.Wait(_commonConstant.loginMailFieldXpath, durationTime);
+        _uiTestService.Login(_commonConstant.loginMailFieldXpath, "murat.user@nttdata.com");
+
+//        //FİŞ EKLEME
+        for (int i = 1; i <= 3; i++) { // randomları metot olarak topla.
+
+            Random random = new Random();
+
+            int tutar = random.nextInt((901) + 100);
+
+            double kdvTutar = (tutar * (1 + (18.0 / 100.0))); // virgüllü kullanmam lazım onu nasıl yaparım ögren
+            int kdvTutarint = (int) kdvTutar;
+
+            int fisNo = random.nextInt((10) + 1);
+            String stringFisNo = Integer.toString(fisNo);
+
+            String[] kdv = {"1", "8", "18"};
+            int randomIndex = random.nextInt(kdv.length);
+            String randomKdv = kdv[randomIndex];
+
+            String[] institution = {"Trendyol", "Opet", "Market", ",Getir", "Taksi"};
+            int randomInstitution = random.nextInt(institution.length);
+            String randomInstitutions = institution[randomInstitution];
+
+            LocalDate currentDate = LocalDate.now();
+            LocalDate startDate = currentDate.minusDays(5);
+            LocalDate endDate = currentDate.plusDays(5);
+            int randomDays = random.nextInt(endDate.getDayOfYear() - startDate.getDayOfYear()) + startDate.getDayOfYear();
+            LocalDate randomDate = LocalDate.ofYearDay(currentDate.getYear(), randomDays);
+            String formattedDate = randomDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+            _uiTestService.DocumentSection("Test Fiş", stringFisNo, durationTime);
+            _uiTestService.DropDownLastElement(_userConstant.documentCostCenterDropdownXpath, durationTime); // 3 kere olan seyi 1 kere yazabiliyor muyuz?
+            _uiTestService.DropDownLastElement(_userConstant.documentPaymentMethodDropdownXpath, durationTime);
+            _uiTestService.DropDownLastElement(_userConstant.documentCurrencyDropdownXpath, durationTime);
+            _uiTestService.FindElementWrite(_userConstant.documentAmountFieldXpath, Integer.toString(tutar));
+            _uiTestService.FindElementWrite(_userConstant.documentVatRateFieldXpath, randomKdv);
+            _uiTestService.FindElementWrite(_userConstant.documentVatAmountFieldXpath, Integer.toString(kdvTutarint));
+            _uiTestService.FindElementWrite(_userConstant.documentExchangeRateFieldXpath, Integer.toString(random.nextInt((20) + 1)));
+            _uiTestService.FindElementWrite(_userConstant.documentInstitutionFieldXpath, randomInstitutions);
+            _uiTestService.FindElementWrite(_userConstant.documentIssuedDateFieldXpath, formattedDate);
+            _uiTestService.FindElementWrite(_userConstant.documentDescriptionFieldXpath, UUID.randomUUID().toString().replaceAll("-", "").substring(0, 20));
+            _uiTestService.DocumentImageFileField();
+            _uiTestService.FindElementClick(_commonConstant.modalSaveButtonXpath);
+            _uiTestService.Notification(durationTime * 3);
+            _uiTestService.FindElementClick(_commonConstant.modalCloseButtonXpath);
+        }
+
+        _uiTestService.Logout(durationTime);
+
+        //APPROVER LOGİN
+
+        _uiTestService.Wait(_commonConstant.loginMailFieldXpath, durationTime);
+        _uiTestService.Login(_commonConstant.loginMailFieldXpath, "murat.approver@nttdata.com");
+//
+        //FİŞ ONAY/RED
+        _uiTestService.Wait(_commonConstant.documentSectionXpath, durationTime * 2);
+        _uiTestService.FindElementClick(_commonConstant.documentSectionXpath);
+
+        for (int i = 0; i < 3; i++) {
+            JavascriptExecutor js = (JavascriptExecutor) _driver;
+            js.executeScript("window.scrollTo(0, document.body.scrollHeight * " + i + ");"); // kodu UI test servise tası
+            Thread.sleep(1000);
+
+        }
+
+        _uiTestService.DocumentApproveButton(_commonConstant.showSeventeenRecordButtonXpath, durationTime * 2);
+        _uiTestService.DetailSection(_commonConstant.showSeventeenRecordButtonXpath, durationTime);
+
+        _uiTestService.DocumentApproveButton(_commonConstant.showEighteenRecordButtonXpath, durationTime * 2);
+        _uiTestService.DetailSection(_commonConstant.showEighteenRecordButtonXpath, durationTime);
+
+        _uiTestService.DocumentRejectButton(_commonConstant.showNineteenRecordButtonXpath, durationTime * 2);
+        _uiTestService.DetailSection(_commonConstant.showNineteenRecordButtonXpath, durationTime);
+
+        JavascriptExecutor js = (JavascriptExecutor) _driver;
+        js.executeScript("window.scrollTo(0,0);");
+        Thread.sleep(1000);
+
+        //LOGOUT
+
+        _uiTestService.Logout(durationTime);
+
+        //USER LOGİN
+
+        _uiTestService.Wait(_commonConstant.loginMailFieldXpath, durationTime);
+        _uiTestService.Login(_commonConstant.loginMailFieldXpath, "murat.user@nttdata.com");
+
+        //FORM YARAT
+
+        _uiTestService.Wait(_commonConstant.formSectionXpath, durationTime);
+        _uiTestService.FindElementClick(_commonConstant.formSectionXpath);
+
+        _uiTestService.Wait(_commonConstant.createRecordXpath, durationTime);
+        _uiTestService.FindElementClick(_commonConstant.createRecordXpath);
+
+        _uiTestService.Wait(_commonConstant.nameFieldXpath, durationTime);
+        _uiTestService.FindElementWrite(_commonConstant.nameFieldXpath, "Test Form");
+
+        _uiTestService.Wait(_commonConstant.codeFieldXpath, durationTime);
+        _uiTestService.FindElementWrite(_commonConstant.codeFieldXpath, UUID.randomUUID().toString().replaceAll("-", "").substring(0, 20));
+
+        _uiTestService.Wait(_commonConstant.modalSaveButtonXpath, durationTime);
+        _uiTestService.FindElementClick(_commonConstant.modalSaveButtonXpath);
+
+        _uiTestService.Wait(_commonConstant.notificationSuccessStateTextXpath, durationTime);
+        _uiTestService.Notification(durationTime);
+
+        _uiTestService.Wait(_commonConstant.modalCloseButtonXpath, durationTime);
+        _uiTestService.FindElementClick(_commonConstant.modalCloseButtonXpath);
+
+        _uiTestService.Wait(_commonConstant.showSevenRecordButtonXpath, durationTime);
+        _uiTestService.FindElementClick(_commonConstant.showSevenRecordButtonXpath);
+
+        _uiTestService.Wait(_userConstant.addDocumentToFormButtonXpath, durationTime);
+        _uiTestService.FindElementClick(_userConstant.addDocumentToFormButtonXpath);
+
+        _uiTestService.Wait(_userConstant.formDocumentDropdownXpath, durationTime);
+        _uiTestService.DocumentDropDown(_userConstant.formDocumentDropdownXpath, durationTime * 2);
+
+
+        _uiTestService.Wait(_commonConstant.modalCloseButtonXpath, durationTime);
+        _uiTestService.FindElementClick(_commonConstant.modalCloseButtonXpath);
+
+        _uiTestService.Wait(_commonConstant.showSevenRecordButtonXpath, durationTime);
+        _uiTestService.FindElementClick(_commonConstant.showSevenRecordButtonXpath);
+
+        _uiTestService.Wait(_userConstant.viewFormDocumentsButtonXpath, durationTime);
+        _uiTestService.FindElementClick(_userConstant.viewFormDocumentsButtonXpath);
+
+        _uiTestService.Wait(_commonConstant.modalCloseButtonXpath, durationTime);
+        _uiTestService.FindElementClick(_commonConstant.modalCloseButtonXpath);
+
+        // _uiTestService.Logout(durationTime);
     }
+
 
     @AfterEach
     void tearDown() throws InterruptedException {
 //        Thread.sleep(1500);
-//        driver.close();
+//        _driver.close();
     }
 }
 
